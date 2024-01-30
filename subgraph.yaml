@@ -1,0 +1,35 @@
+specVersion: 1.0.0
+indexerHints:
+  prune: auto
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: MemeFactory
+    network: mumbai
+    source:
+      address: "0x70024AB16dBF68b154fCF7eb1eC0bD7D2f17F908"
+      abi: MemeFactory
+      startBlock: 45325910
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - MemeFactory__MemeCreated
+        - MemeFactory__MinAmountInUpdated
+        - MemeFactory__TreasuryUpdated
+        - OwnershipTransferred
+      abis:
+        - name: MemeFactory
+          file: ./abis/MemeFactory.json
+      eventHandlers:
+        - event: MemeFactory__MemeCreated(uint256,address)
+          handler: handleMemeFactory__MemeCreated
+        - event: MemeFactory__MinAmountInUpdated(uint256)
+          handler: handleMemeFactory__MinAmountInUpdated
+        - event: MemeFactory__TreasuryUpdated(address)
+          handler: handleMemeFactory__TreasuryUpdated
+        - event: OwnershipTransferred(indexed address,indexed address)
+          handler: handleOwnershipTransferred
+      file: ./src/meme-factory.ts
