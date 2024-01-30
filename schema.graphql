@@ -1,33 +1,106 @@
-type MemeFactory__MemeCreated @entity(immutable: true) {
-  id: Bytes!
-  index: BigInt! # uint256
-  meme: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type MemeFactory__MinAmountInUpdated @entity(immutable: true) {
-  id: Bytes!
-  minAmountIn: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type MemeFactory__TreasuryUpdated @entity(immutable: true) {
-  id: Bytes!
+type Directory @entity {
+  id: ID! # address
+  memeCount: BigInt!
+  txCount: BigInt! # uint256
+  totalVolume: BigDecimal! # uint256
+  owner: Bytes! # address
   treasury: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
+  treasuryEarnings: BigDecimal!
 }
 
-type OwnershipTransferred @entity(immutable: true) {
-  id: Bytes!
-  previousOwner: Bytes! # address
-  newOwner: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
+type Token @entity {
+  id: ID! # index
+  name: String!
+  symbol: String!
+  uri: String!
+  status: String!
+
+  meme: Bytes! # address
+  preMeme: Bytes! # address
+  fees: Bytes! # address
+  statusHolder: Bytes! # address
+  createdAt: BigInt! # uint256
+  openedAt: BigInt! # uint256
+  opened: Boolean!
+
+  preMemeBalance: BigDecimal!
+  preMemeContributed: BigDecimal!
+
+  reserveVirtualBase: BigDecimal!
+  reserveRealBase: BigDecimal!
+  reserveRealMeme: BigDecimal!
+  totalSupply: BigDecimal!
+
+  floorPrice: BigDecimal!
+  marketPrice: BigDecimal!
+  totalFeesBase: BigDecimal!
+  volume: BigDecimal!
+
+  txCount: BigInt! # uint256
+}
+
+type Transaction @entity {
+  id: ID!
+  blockNumber: BigInt! # uint256
+  timestamp: BigInt! # uint256
+  buys: [Buy!]!
+  sells: [Sell!]!
+}
+
+type Buy @entity {
+  id: ID!
+  transaction: Transaction!
+  timestamp: BigInt! # uint256
+  memeId: BigInt! # uint256
+  memeAddress: Bytes! # address
+  account: Bytes! # address
+  amountIn: BigDecimal!
+  amountOut: BigDecimal!
+  marketPrice: BigDecimal!
+}
+
+type Sell @entity {
+  id: ID!
+  transaction: Transaction!
+  timestamp: BigInt! # uint256
+  memeId: BigInt! # uint256
+  memeAddress: Bytes! # address
+  account: Bytes! # address
+  amountIn: BigDecimal!
+  amountOut: BigDecimal!
+  marketPrice: BigDecimal!
+}
+
+type TokenHourData @entity {
+  id: ID!
+  timestamp: BigInt! # uint256
+  meme: Bytes! # address
+  marketPrice: BigDecimal!
+  hourlyVolume: BigDecimal!
+  hourlyTxns: BigInt! # uint256
+}
+
+type TokenDayData @entity {
+  id: ID!
+  timestamp: BigInt! # uint256
+  meme: Bytes! # address
+  marketPrice: BigDecimal!
+  dailyVolume: BigDecimal!
+  dailyTxns: BigInt! # uint256
+}
+
+type Account @entity {
+  id: Bytes! # address
+  providerEarnings: BigDecimal!
+  statusEarnings: BigDecimal!
+  holderEarnings: BigDecimal!
+  tokenPositions: [TokenPosition!]! @derivedFrom(field: "account")
+}
+
+type TokenPosition @entity {
+  id: ID!
+  account: Account!
+  meme: Bytes! # address
+  balance: BigDecimal!
+  claimable: BigDecimal!
 }

@@ -16,20 +16,63 @@ dataSources:
       apiVersion: 0.0.7
       language: wasm/assemblyscript
       entities:
-        - MemeFactory__MemeCreated
-        - MemeFactory__MinAmountInUpdated
-        - MemeFactory__TreasuryUpdated
-        - OwnershipTransferred
+        - Directory
       abis:
         - name: MemeFactory
           file: ./abis/MemeFactory.json
+        - name: PreMeme
+          file: ./abis/PreMeme.json
+        - name: Meme
+          file: ./abis/Meme.json
       eventHandlers:
         - event: MemeFactory__MemeCreated(uint256,address)
           handler: handleMemeFactory__MemeCreated
-        - event: MemeFactory__MinAmountInUpdated(uint256)
-          handler: handleMemeFactory__MinAmountInUpdated
         - event: MemeFactory__TreasuryUpdated(address)
           handler: handleMemeFactory__TreasuryUpdated
         - event: OwnershipTransferred(indexed address,indexed address)
           handler: handleOwnershipTransferred
       file: ./src/meme-factory.ts
+templates:
+  - kind: ethereum/contract
+    name: Meme
+    network: mumbai
+    source:
+      abi: Meme
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./src/meme.ts
+      entities:
+        - Token
+        - Directory
+        - Transaction
+        - Buy
+        - TokenHourData
+        - TokenDayData
+        - Account
+        - TokenPosition
+      abis:
+        - name: Meme
+          file: ./abis/Meme.json
+        - name: PreMeme
+          file: ./abis/PreMeme.json
+        - name: MemeFactory
+          file: ./abis/MemeFactory.json
+      eventHandlers:
+        - event: Meme__Buy(indexed address,indexed address,uint256,uint256)
+          handler: handleMeme__Buy
+        - event: Meme__Sell(indexed address,indexed address,uint256,uint256)
+          handler: handleMeme__Sell
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
+        - event: Meme__Claim(indexed address,uint256)
+          handler: handleMeme__Claim
+        - event: Meme__StatusFee(indexed address,uint256)
+          handler: handleMeme__StatusFee
+        - event: Meme__ProviderFee(indexed address,uint256)
+          handler: handleMeme__ProviderFee
+        - event: Meme__ProtocolFee(indexed address,uint256)
+          handler: handleMeme__ProtocolFee
+        - event: Meme__Burn(indexed address,uint256)
+          handler: handleMeme__Burn
