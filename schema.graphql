@@ -45,6 +45,7 @@ type Transaction @entity {
   timestamp: BigInt! # uint256
   buys: [Buy!]!
   sells: [Sell!]!
+  contributes: [Contribute!]!
 }
 
 type Buy @entity {
@@ -68,6 +69,17 @@ type Sell @entity {
   account: Bytes! # address
   amountIn: BigDecimal!
   amountOut: BigDecimal!
+  marketPrice: BigDecimal!
+}
+
+type Contribute @entity {
+  id: ID!
+  transaction: Transaction!
+  timestamp: BigInt! # uint256
+  memeId: BigInt! # uint256
+  memeAddress: Bytes! # address
+  account: Bytes! # address
+  amountIn: BigDecimal!
   marketPrice: BigDecimal!
 }
 
@@ -95,6 +107,7 @@ type Account @entity {
   statusEarnings: BigDecimal!
   holderEarnings: BigDecimal!
   tokenPositions: [TokenPosition!]! @derivedFrom(field: "account")
+  preTokenPositions: [PreTokenPosition!]! @derivedFrom(field: "account")
 }
 
 type TokenPosition @entity {
@@ -103,4 +116,19 @@ type TokenPosition @entity {
   meme: Bytes! # address
   balance: BigDecimal!
   claimable: BigDecimal!
+}
+
+type PreTokenPosition @entity {
+  id: ID!
+  account: Account!
+  meme: Bytes! # address
+  contributed: BigDecimal!
+  redeemed: BigDecimal!
+}
+
+type StatusPosition @entity {
+  id: ID!
+  account: Account!
+  meme: Bytes! # address
+  held: Boolean!
 }

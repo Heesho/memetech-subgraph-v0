@@ -4,8 +4,8 @@ import {
   OwnershipTransferred as OwnershipTransferredEvent,
 } from "../generated/MemeFactory/MemeFactory";
 import { Directory, Token } from "../generated/schema";
-import { Meme } from "../generated/templates";
-import { BigInt, Address } from "@graphprotocol/graph-ts";
+import { Meme, PreMeme } from "../generated/templates";
+import { Address } from "@graphprotocol/graph-ts";
 import { MemeFactory as FactoryContract } from "../generated/MemeFactory/MemeFactory";
 import { Meme as MemeContract } from "../generated/templates/Meme/Meme";
 import { PreMeme as PreMemeContract } from "../generated/templates/Meme/PreMeme";
@@ -38,6 +38,7 @@ export function handleMemeFactory__MemeCreated(
 
   Meme.create(event.params.meme);
   let memeContract = MemeContract.bind(event.params.meme);
+  PreMeme.create(memeContract.preMeme());
   let preMemeContract = PreMemeContract.bind(memeContract.preMeme());
 
   let meme = Token.load(event.params.index.toString());

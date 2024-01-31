@@ -6,6 +6,7 @@ import {
   Meme__ProviderFee as Meme__ProviderFeeEvent,
   Meme__ProtocolFee as Meme__ProtocolFeeEvent,
   Meme__Burn as Meme__BurnEvent,
+  Meme__StatusUpated as Meme__StatusUpatedEvent,
   Transfer as TransferEvent,
 } from "../generated/MemeFactory/Meme";
 import {
@@ -24,7 +25,6 @@ import { updateTokenHourData, updateTokenDayData } from "./day-updates";
 import {
   FACTORY_ADDRESS,
   ZERO_BD,
-  ZERO_BI,
   ONE_BI,
   convertEthToDecimal,
 } from "./helpers";
@@ -65,6 +65,7 @@ export function handleMeme__Buy(event: Meme__BuyEvent): void {
     transaction.blockNumber = event.block.number;
     transaction.buys = [];
     transaction.sells = [];
+    transaction.contributes = [];
     transaction.save();
   }
 
@@ -136,6 +137,7 @@ export function handleMeme__Sell(event: Meme__SellEvent): void {
     transaction.blockNumber = event.block.number;
     transaction.buys = [];
     transaction.sells = [];
+    transaction.contributes = [];
     transaction.save();
   }
 
@@ -286,5 +288,18 @@ export function handleMeme__Burn(event: Meme__BurnEvent): void {
   let meme = Token.load(index.toString())!;
   meme.totalSupply = convertEthToDecimal(memeContract.maxSupply());
   meme.floorPrice = convertEthToDecimal(memeContract.getFloorPrice());
+  meme.save();
+}
+
+export function handleMeme__StatusUpated(event: Meme__StatusUpatedEvent): void {
+  let factoryContract = FactoryContract.bind(
+    Address.fromString(FACTORY_ADDRESS)
+  );
+  let memeContract = MemeContract.bind(event.address);
+  let index = factoryContract.getIndexByMeme(event.address);
+
+  let meme = Token.load(index.toString())!;
+  meme.status = event.params.status;
+  meme.statusHolder = event.params.account;
   meme.save();
 }

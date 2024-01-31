@@ -48,6 +48,7 @@ templates:
         - Directory
         - Transaction
         - Buy
+        - Sell
         - TokenHourData
         - TokenDayData
         - Account
@@ -64,8 +65,6 @@ templates:
           handler: handleMeme__Buy
         - event: Meme__Sell(indexed address,indexed address,uint256,uint256)
           handler: handleMeme__Sell
-        - event: Transfer(indexed address,indexed address,uint256)
-          handler: handleTransfer
         - event: Meme__Claim(indexed address,uint256)
           handler: handleMeme__Claim
         - event: Meme__StatusFee(indexed address,uint256)
@@ -76,3 +75,41 @@ templates:
           handler: handleMeme__ProtocolFee
         - event: Meme__Burn(indexed address,uint256)
           handler: handleMeme__Burn
+        - event: Meme__StatusUpated(indexed address,string)
+          handler: handleMeme__StatusUpated
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
+  - kind: ethereum/contract
+    name: PreMeme
+    network: mumbai
+    source:
+      abi: PreMeme
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./src/pre-meme.ts
+      entities:
+        - Token
+        - Directory
+        - Transaction
+        - Buy
+        - Sell
+        - TokenHourData
+        - TokenDayData
+        - Account
+        - TokenPosition
+      abis:
+        - name: Meme
+          file: ./abis/Meme.json
+        - name: PreMeme
+          file: ./abis/PreMeme.json
+        - name: MemeFactory
+          file: ./abis/MemeFactory.json
+      eventHandlers:
+        - event: PreMeme__Contributed(indexed address,uint256)
+          handler: handlePreMeme__Contributed
+        - event: PreMeme__MarketOpened(indexed address,uint256,uint256)
+          handler: handlePreMeme__MarketOpened
+        - event: PreMeme__Redeemed(indexed address,uint256)
+          handler: handlePreMeme__Redeemed

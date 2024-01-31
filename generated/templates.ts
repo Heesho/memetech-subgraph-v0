@@ -15,3 +15,13 @@ export class Meme extends DataSourceTemplate {
     DataSourceTemplate.createWithContext("Meme", [address.toHex()], context);
   }
 }
+
+export class PreMeme extends DataSourceTemplate {
+  static create(address: Address): void {
+    DataSourceTemplate.create("PreMeme", [address.toHex()]);
+  }
+
+  static createWithContext(address: Address, context: DataSourceContext): void {
+    DataSourceTemplate.createWithContext("PreMeme", [address.toHex()], context);
+  }
+}
